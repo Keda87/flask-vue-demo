@@ -1,0 +1,5 @@
+.idea
+*.pyc
+*.lock
+__pycache__
+client/node_modules/
