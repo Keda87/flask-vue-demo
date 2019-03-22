@@ -32,7 +32,9 @@
                         class="btn btn-warning btn-sm"
                         v-b-modal.book-update-modal
                         @click="editBook(book)">Update</button>
-                <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                <button type="button"
+                        class="btn btn-danger btn-sm"
+                        @click="onDeleteBook(book)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -206,6 +208,23 @@ export default {
     },
     editBook(book) {
       this.editForm = book;
+    },
+    onDeleteBook(book) {
+      this.removeBook(book.id);
+    },
+    removeBook(bookID) {
+      const path = `http://127.0.0.1:5000/books/${bookID}`;
+      axios.delete(path)
+        .then(() => {
+          this.getBooks();
+          this.message = 'Book removed!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getBooks();
+        });
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
