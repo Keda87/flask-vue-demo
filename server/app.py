@@ -1,14 +1,14 @@
 import uuid
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from quart import Quart, jsonify, request
+from quart_cors import cors
 
 DEBUG = True
 
-app = Flask(__name__)
+app = Quart(__name__)
 app.config.from_object(__name__)
 
-CORS(app)
+cors(app)
 
 
 BOOKS = [
@@ -42,10 +42,10 @@ def remove_book(book_id):
 
 
 @app.route('/books', methods=['get', 'post'])
-def all_books():
+async def all_books():
     response_object = {'status': 'success'}
     if request.method == 'POST':
-        post_data = request.get_json()
+        post_data = await request.get_json()
         BOOKS.append({
             'id': uuid.uuid4().hex,
             'title': post_data.get('title'),
@@ -58,10 +58,10 @@ def all_books():
     return jsonify(response_object)
 
 @app.route('/books/<book_id>', methods=['put', 'delete'])
-def single_book(book_id):
+async def single_book(book_id):
     response_object = {'status': 'success'}
     if request.method == 'PUT':
-        post_data = request.get_json()
+        post_data = await request.get_json()
         remove_book(book_id)
         BOOKS.append({
             'id': uuid.uuid4().hex,
@@ -77,7 +77,7 @@ def single_book(book_id):
 
 
 @app.route('/ping', methods=['get'])
-def ping_pong():
+async def ping_pong():
     return jsonify('pong!')
 
 
